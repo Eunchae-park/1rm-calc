@@ -13,7 +13,7 @@
 
     body {
       margin: 0;
-      padding: 14px;
+      padding: 10px;
       background: #0f172a;
       color: #f8fafc;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -25,26 +25,26 @@
     }
 
     h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
+      font-size: 20px;
+      margin-bottom: 4px;
     }
 
     .description {
-      font-size: 14px;
+      font-size: 12px;
       color: #cbd5e1;
-      line-height: 1.5;
-      margin-bottom: 18px;
+      line-height: 1.4;
+      margin-bottom: 10px;
     }
 
     .tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 10px;
       position: sticky;
       top: 0;
       z-index: 100;
       background: #0f172a;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
 
     .tab-btn {
@@ -52,9 +52,9 @@
       border: none;
       background: #1e293b;
       color: white;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 15px;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -73,28 +73,28 @@
 
     .card {
       background: #111827;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 16px;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
       border: 1px solid #1f2937;
     }
 
     .section-title {
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 800;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .exercise-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 6px;
     }
 
     label {
       display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
+      margin-bottom: 3px;
+      font-size: 12px;
       color: #cbd5e1;
     }
 
@@ -105,19 +105,19 @@
       border: 1px solid #334155;
       background: #020617;
       color: white;
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 16px;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 14px;
     }
 
     input,
     select {
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
 
     textarea {
-      min-height: 240px;
-      line-height: 1.7;
+      min-height: 160px;
+      line-height: 1.6;
       resize: vertical;
     }
 
@@ -126,26 +126,29 @@
       border: none;
       background: linear-gradient(135deg, #10b981, #059669);
       color: white;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 17px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 800;
-      margin-top: 10px;
+      margin-top: 8px;
       cursor: pointer;
     }
 
     .output {
       background: #020617;
       border: 1px solid #1e293b;
-      border-radius: 18px;
-      padding: 16px;
-      line-height: 1.9;
-      font-size: 15px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
     }
 
     .output-line {
-      padding: 6px 0;
+      padding: 3px 0;
       border-bottom: 1px solid rgba(255,255,255,0.06);
+      line-height: 1.5;
+    }
+    .output-line:last-child {
+      border-bottom: none;
     }
 
     .weight-highlight {
@@ -153,8 +156,22 @@
       font-weight: 800;
     }
 
+    .wl-move-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      padding: 6px 0 2px;
+    }
+
+    .wl-set-line {
+      font-size: 14px;
+      color: #34d399;
+      font-weight: 700;
+      padding: 1px 0 1px 8px;
+    }
+
     .small-note {
-      margin-top: 12px;
+      margin-top: 8px;
       font-size: 12px;
       color: #94a3b8;
       line-height: 1.6;
@@ -163,12 +180,12 @@
     .unit-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .unit-row select {
-      width: 120px;
+      width: 100px;
       margin-bottom: 0;
     }
 
@@ -180,12 +197,12 @@
       background: #1e293b;
       border: none;
       color: white;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 17px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .accordion-content {
@@ -200,7 +217,7 @@
     }
 
     .accordion-icon {
-      font-size: 18px;
+      font-size: 15px;
     }
   </style>
 </head>
@@ -462,29 +479,6 @@ push jerk 75% 3x3</textarea>
     function getExerciseMax(exercise, maxes) {
       const lower = exercise.toLowerCase();
 
-      // DEADLIFT
-      if (
-        lower.includes('deadlift') ||
-        lower.includes('dead lift') ||
-        lower.includes('d.l')
-      ) {
-        return maxes.deadlift;
-      }
-
-      // FRONT SQUAT
-      if (
-	lower.includes('front squat')
-	) {
-        return maxes.frontSquat;
-      }
-
-      // SQUAT
-      if (
-        lower.includes('back squat')
-      ) {
-        return maxes.backSquat;
-      }
-
       // CLEAN
       if (
         lower.includes('power clean') ||
@@ -518,12 +512,36 @@ push jerk 75% 3x3</textarea>
       // SNATCH
       if (
         lower.includes('snatch') ||
+		lower.includes('(slow d.l) snatch') ||
         lower.includes('s. pull up') ||
         lower.includes('s. balance & ohs') ||
         lower.includes('s. balance') ||
         lower.includes('ohs')
       ) {
         return maxes.snatch;
+      }
+	  
+	  // DEADLIFT
+      if (
+        lower.includes('deadlift') ||
+        lower.includes('dead lift') ||
+        lower.includes('d.l')
+      ) {
+        return maxes.deadlift;
+      }
+
+      // FRONT SQUAT
+      if (
+		lower.includes('front squat')
+	  ) {
+        return maxes.frontSquat;
+      }
+
+      // SQUAT
+      if (
+        lower.includes('back squat')
+      ) {
+        return maxes.backSquat;
       }
 
       return maxes.clean;
@@ -600,30 +618,63 @@ push jerk 75% 3x3</textarea>
       };
 
       const input = document.getElementById('weightlifting-input').value;
+      const outputEl = document.getElementById('weightlifting-output');
+      let html = '';
 
-      const processed = input
-        .split('\n')
-        .map(line => {
-          const maxWeight = getExerciseMax(line, maxes);
+      input.split('\n').forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) { html += '<div class="output-line">&nbsp;</div>'; return; }
 
-          let updated = line;
+        const maxWeight = getExerciseMax(line, maxes);
 
-          updated = updated.replace(/(\d+)\s*~\s*(\d+)%/g, (match, start, end) => {
-            const startWeight = roundWeight(maxWeight * (parseFloat(start) / 100));
-            const endWeight = roundWeight(maxWeight * (parseFloat(end) / 100));
+        // 퍼센트가 없는 줄 → 회색 종목명 스타일로 통일
+        if (!/%/.test(trimmed)) {
+          html += `<div class="output-line wl-move-name">${trimmed}</div>`;
+          return;
+        }
 
-            return `${startWeight}~${endWeight}kg`;
+        // 종목명 추출: 첫 숫자 앞까지
+        const moveMatch = trimmed.match(/^([^0-9(]+)/);
+        const moveName = moveMatch ? moveMatch[1].trim() : '';
+
+        // 각 퍼센트 세그먼트를 콤마로 분리
+        const segments = trimmed.split(',');
+        let setLines = [];
+
+        segments.forEach((seg, segIdx) => {
+          seg = seg.trim();
+          // 첫 번째 세그먼트에서 종목명 제거
+          if (segIdx === 0 && moveName) {
+            seg = seg.replace(moveName, '').trim();
+          }
+
+          // 범위 퍼센트: 90~100%
+          seg = seg.replace(/(\d+)\s*~\s*(\d+)%/g, (m, s, e) => {
+            const kg1 = roundWeight(maxWeight * parseFloat(s) / 100);
+            const kg2 = roundWeight(maxWeight * parseFloat(e) / 100);
+            const lb1 = kgToLb(kg1);
+            const lb2 = kgToLb(kg2);
+            return `${kg1}~${kg2}kg (${lb1}~${lb2}lb)`;
           });
 
-          updated = updated.replace(/(\d+(?:\.\d+)?)\s*%/g, (match, percent) => {
-            return calculateWeight(parseFloat(percent), maxWeight);
+          // 단일 퍼센트: 65% 3x2
+          seg = seg.replace(/(\d+(?:\.\d+)?)\s*%/g, (m, p) => {
+            return calculateWeight(parseFloat(p), maxWeight);
           });
 
-          return updated;
-        })
-        .join('\n');
+          // 퍼센트 치환된 seg 그대로 사용 (세트 정보 이미 포함됨)
+          setLines.push(seg.trim());
+        });
 
-      renderOutput('weightlifting-output', processed);
+        if (moveName) {
+          html += `<div class="output-line wl-move-name">${moveName}</div>`;
+        }
+        setLines.forEach(s => {
+          html += `<div class="output-line wl-set-line">${s}</div>`;
+        });
+      });
+
+      outputEl.innerHTML = html;
     }
 
     // TEST CASES
