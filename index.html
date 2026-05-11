@@ -169,6 +169,14 @@
       font-weight: 700;
       padding: 1px 0 1px 8px;
     }
+    .wl-set-line span {
+      color: #64748b;
+      font-weight: 400;
+    }
+    .set-num {
+      color: #f8fafc !important;
+      font-weight: 400 !important;
+    }
 
     .small-note {
       margin-top: 8px;
@@ -479,6 +487,29 @@ push jerk 75% 3x3</textarea>
     function getExerciseMax(exercise, maxes) {
       const lower = exercise.toLowerCase();
 
+      // DEADLIFT
+      if (
+        lower.includes('deadlift') ||
+        lower.includes('dead lift') ||
+        lower.includes('d.l')
+      ) {
+        return maxes.deadlift;
+      }
+
+      // FRONT SQUAT
+      if (
+	lower.includes('front squat')
+	) {
+        return maxes.frontSquat;
+      }
+
+      // SQUAT
+      if (
+        lower.includes('back squat')
+      ) {
+        return maxes.backSquat;
+      }
+
       // CLEAN
       if (
         lower.includes('power clean') ||
@@ -512,36 +543,12 @@ push jerk 75% 3x3</textarea>
       // SNATCH
       if (
         lower.includes('snatch') ||
-		lower.includes('(slow d.l) snatch') ||
         lower.includes('s. pull up') ||
         lower.includes('s. balance & ohs') ||
         lower.includes('s. balance') ||
         lower.includes('ohs')
       ) {
         return maxes.snatch;
-      }
-	  
-	  // DEADLIFT
-      if (
-        lower.includes('deadlift') ||
-        lower.includes('dead lift') ||
-        lower.includes('d.l')
-      ) {
-        return maxes.deadlift;
-      }
-
-      // FRONT SQUAT
-      if (
-		lower.includes('front squat')
-	  ) {
-        return maxes.frontSquat;
-      }
-
-      // SQUAT
-      if (
-        lower.includes('back squat')
-      ) {
-        return maxes.backSquat;
       }
 
       return maxes.clean;
@@ -634,8 +641,8 @@ push jerk 75% 3x3</textarea>
         }
 
         // 종목명 추출: 첫 숫자 앞까지
-        const moveMatch = trimmed.match(/^([^0-9(]+)/);
-        const moveName = moveMatch ? moveMatch[1].trim() : '';
+        const moveMatch = trimmed.match(/^(.*?)(?=\d+(?:\.\d+)?\s*(?:~\d+)?\s*%)/);
+        const moveName = moveMatch ? moveMatch[1].trim().replace(/,\s*$/, '') : '';
 
         // 각 퍼센트 세그먼트를 콤마로 분리
         const segments = trimmed.split(',');
@@ -663,15 +670,16 @@ push jerk 75% 3x3</textarea>
           });
 
           // 퍼센트 치환된 seg 그대로 사용 (세트 정보 이미 포함됨)
-          setLines.push(seg.trim());
+          // 세트 패턴(NxN)만 회색 span으로 감싸기
+          const segTrimmed = seg.trim();
+          const colored = segTrimmed.replace(/(\d+x\d+)/g, '<span class="set-num">$1</span>');
+          setLines.push(colored);
         });
 
         if (moveName) {
           html += `<div class="output-line wl-move-name">${moveName}</div>`;
         }
-        setLines.forEach(s => {
-          html += `<div class="output-line wl-set-line">${s}</div>`;
-        });
+        html += `<div class="output-line wl-set-line">${setLines.join(', ')}</div>`;
       });
 
       outputEl.innerHTML = html;
