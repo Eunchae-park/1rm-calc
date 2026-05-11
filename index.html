@@ -551,7 +551,7 @@ push jerk 75% 3x3</textarea>
         return maxes.snatch;
       }
 
-      return 0;
+      return maxes.clean;
     }
 
     function calculateWeight(percent, maxWeight) {
@@ -644,14 +644,65 @@ push jerk 75% 3x3</textarea>
         's\.d\.l', 'c\.d\.l', 'deadlift',
         '월\b', '화\b', '수\b', '목\b', '금\b', '토\b', '일\b'
       ];
-      const kwRegex = new RegExp(
-        '(?<!&\\s*)(?<![\\w%])(' + moveKeywords.join('|') + ')(?=[\\s(\\d]|$)',
-        'gi'
-      );
-      // & 뒤에 붙은 줄바꿈 제거
+      // 종목명 앞에 자동 줄바꿈 삽입
+      // 긴 패턴(복합종목)을 먼저 나열해야 짧은 패턴이 중간에 끼어들지 않음
+      const allMoves = [
+        // (slow d.l) 복합 종목 — 반드시 먼저
+        '\\(slow d\\.l\\)\\s*s\\.\\s*pull\\s*up',
+        '\\(slow d\\.l\\)\\s*c\\.\\s*pull\\s*up',
+        '\\(slow d\\.l\\)\\s*snatch',
+        '\\(slow d\\.l\\)\\s*clean',
+        '\\(slow d\\.l\\)\\s*c\\.d\\.l',
+        '\\(slow d\\.l\\)\\s*s\\.d\\.l',
+        // & 복합 종목
+        's\\.pull\\s*up\\s*&\\s*half\\s*snatch',
+        'c\\.pull\\s*up\\s*&\\s*half\\s*clean',
+        's\\.\\s*balance\\s*&\\s*ohs',
+        // low hang
+        'low\\s*hang\\s*s\\.\\s*pull\\s*up',
+        'low\\s*hang\\s*power\\s*snatch',
+        'low\\s*hang\\s*snatch',
+        // hang power
+        'hang\\s*power\\s*snatch',
+        'hang\\s*power\\s*clean',
+        'hang\\s*snatch',
+        'hang\\s*clean',
+        // power / squat
+        'power\\s*snatch',
+        'squat\\s*snatch',
+        'power\\s*clean',
+        'squat\\s*clean',
+        // pull up
+        's\\.\\s*pull\\s*up',
+        'c\\.\\s*pull\\s*up',
+        // press
+        'back\\s*press',
+        'sots\\s*press',
+        'm\\.\\s*press',
+        'push\\s*press',
+        // squat
+        'back\\s*squat',
+        'front\\s*squat',
+        // jerk
+        'push\\s*jerk',
+        'split\\s*jerk',
+        // deadlift
+        's\\.d\\.l',
+        'c\\.d\\.l',
+        'deadlift',
+        // single words — 반드시 마지막
+        'hsoc',
+        'snatch',
+        'clean',
+        'jerk',
+        'press',
+        'ohs',
+        // 요일
+        '(?:월|화|수|목|금|토|일)(?=\\b|\\s|$)'
+      ];
+      const moveRegex = new RegExp('(?<![&\\w()])(' + allMoves.join('|') + ')', 'gi');
       const input = rawInput
-        .replace(kwRegex, '\n$1')
-        .replace(/(&[^\n]*)\n/g, '$1 ')
+        .replace(moveRegex, '\n$1')
         .replace(/^\n/, '');
 
       input.split('\n').forEach(line => {
