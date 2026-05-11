@@ -551,7 +551,7 @@ push jerk 75% 3x3</textarea>
         return maxes.snatch;
       }
 
-      return maxes.clean;
+      return 0;
     }
 
     function calculateWeight(percent, maxWeight) {
@@ -624,9 +624,35 @@ push jerk 75% 3x3</textarea>
         deadlift: convertToKg(parseFloat(document.getElementById('wl-deadlift').value) || 0, unit)
       };
 
-      const input = document.getElementById('weightlifting-input').value;
+      const rawInput = document.getElementById('weightlifting-input').value;
       const outputEl = document.getElementById('weightlifting-output');
       let html = '';
+
+      // 종목 키워드 앞에 자동 줄바꿈 삽입
+      const moveKeywords = [
+        'back press', 'sots press', 'm. press', 'push press', 'press',
+        's\.pull up', 'c\.pull up', 'low hang s\. pull up', 's\. pull up',
+        'power snatch', 'squat snatch', 'hang power snatch', 'hang snatch',
+        '\(slow d\.l\) snatch', '\(slow d\.l\) s\. pull up', '\(slow d\.l\) c\. pull up', '\(slow d\.l\) clean',
+        'snatch',
+        'power clean', 'squat clean', 'hang power clean', 'hang clean',
+        '\(slow d\.l\) c\.d\.l', 'c\.d\.l', 'hsoc',
+        'clean',
+        's\. balance & ohs', 's\.balance', 'ohs',
+        'back squat', 'front squat',
+        'push jerk', 'split jerk', 'jerk',
+        's\.d\.l', 'c\.d\.l', 'deadlift',
+        '월\b', '화\b', '수\b', '목\b', '금\b', '토\b', '일\b'
+      ];
+      const kwRegex = new RegExp(
+        '(?<!&\\s*)(?<![\\w%])(' + moveKeywords.join('|') + ')(?=[\\s(\\d]|$)',
+        'gi'
+      );
+      // & 뒤에 붙은 줄바꿈 제거
+      const input = rawInput
+        .replace(kwRegex, '\n$1')
+        .replace(/(&[^\n]*)\n/g, '$1 ')
+        .replace(/^\n/, '');
 
       input.split('\n').forEach(line => {
         const trimmed = line.trim();
