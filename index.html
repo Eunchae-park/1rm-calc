@@ -227,10 +227,10 @@
       <div class="card">
         <button class="accordion-header" onclick="toggleAccordion('cf-accordion', 'cf-icon')">
           <span>1RM 입력</span>
-          <span id="cf-icon" class="accordion-icon">▼</span>
+          <span id="cf-icon" class="accordion-icon">▶</span>
         </button>
 
-        <div id="cf-accordion" class="accordion-content">
+        <div id="cf-accordion" class="accordion-content collapsed">
           <div class="unit-row">
             <label style="margin:0">단위</label>
             <select id="cf-unit">
@@ -276,9 +276,6 @@
           </div>
         </div>
 
-        <button class="calculate-btn" onclick="calculateCrossfit()">
-          계산하기
-        </button>
         </div>
       </div>
 
@@ -293,6 +290,10 @@
 Set 1-2 @ 75%
 Set 3-4 @ 80%
 Set 5-6 @ 85%</textarea>
+
+        <button class="calculate-btn" onclick="calculateCrossfit()">
+          계산하기
+        </button>
       </div>
 
       <div class="card">
@@ -306,10 +307,10 @@ Set 5-6 @ 85%</textarea>
       <div class="card">
         <button class="accordion-header" onclick="toggleAccordion('wl-accordion', 'wl-icon')">
           <span>1RM 입력</span>
-          <span id="wl-icon" class="accordion-icon">▼</span>
+          <span id="wl-icon" class="accordion-icon">▶</span>
         </button>
 
-        <div id="wl-accordion" class="accordion-content">
+        <div id="wl-accordion" class="accordion-content collapsed">
           <div class="unit-row">
             <label style="margin:0">단위</label>
             <select id="wl-unit">
@@ -355,9 +356,6 @@ Set 5-6 @ 85%</textarea>
           </div>
         </div>
 
-        <button class="calculate-btn" onclick="calculateWeightlifting()">
-          계산하기
-        </button>
         </div>
       </div>
 
@@ -375,6 +373,10 @@ clean 80% 2x1, 85% 1x3
 hsoc 90~100% 3x3
 
 push jerk 75% 3x3</textarea>
+
+        <button class="calculate-btn" onclick="calculateWeightlifting()">
+          계산하기
+        </button>
       </div>
 
       <div class="card">
@@ -515,12 +517,12 @@ push jerk 75% 3x3</textarea>
 
       // SNATCH
       if (
-	lower.includes('snatch') ||
-	lower.includes('s. pull up') ||
-	lower.includes('s. balance & ohs') ||
-	lower.includes('s. balance') ||
-	lower.includes('ohs')
-	) {
+        lower.includes('snatch') ||
+        lower.includes('s. pull up') ||
+        lower.includes('s. balance & ohs') ||
+        lower.includes('s. balance') ||
+        lower.includes('ohs')
+      ) {
         return maxes.snatch;
       }
 
