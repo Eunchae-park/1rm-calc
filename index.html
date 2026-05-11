@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1RM 자동 무게 계산기</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 14px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #0f172a;
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: #1e293b;
+      color: white;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #2563eb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .card {
+      background: #111827;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid #1f2937;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #334155;
+      background: #020617;
+      color: white;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      min-height: 240px;
+      line-height: 1.7;
+      resize: vertical;
+    }
+
+    .calculate-btn {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 800;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .output {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      padding: 16px;
+      line-height: 1.9;
+      font-size: 15px;
+    }
+
+    .output-line {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .weight-highlight {
+      color: #34d399;
+      font-weight: 800;
+    }
+
+    .small-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .unit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .unit-row select {
+      width: 120px;
+      margin-bottom: 0;
+    }
+
+    .accordion-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      border: none;
+      color: white;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+
+    .accordion-content {
+      overflow: hidden;
+      max-height: 1000px;
+      transition: max-height 0.3s ease;
+    }
+
+    .accordion-content.collapsed {
+      max-height: 0;
+      margin-bottom: 0;
+    }
+
+    .accordion-icon {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏋️ 1RM 자동 무게 계산기</h1>
+
+    <p class="description">
+      WOD 또는 역도 프로그램을 붙여넣으면 퍼센트를 자동 계산해서 kg/lb로 표시합니다.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'crossfit')">
+        CrossFit
+      </button>
+
+      <button class="tab-btn" onclick="switchTab(event, 'weightlifting')">
+        Weightlifting
+      </button>
+    </div>
+
+    <!-- CROSSFIT -->
+    <div id="crossfit" class="tab-content active">
+      <div class="card">
+        <button class="accordion-header" onclick="toggleAccordion('cf-accordion', 'cf-icon')">
+          <span>1RM 입력</span>
+          <span id="cf-icon" class="accordion-icon">▼</span>
+        </button>
+
+        <div id="cf-accordion" class="accordion-content">
+          <div class="unit-row">
+            <label style="margin:0">단위</label>
+            <select id="cf-unit">
+              <option value="lb" selected>LB</option>
+              <option value="kg">KG</option>
+            </select>
+          </div>
+
+          <div class="exercise-grid">
+          <div>
+            <label>Clean</label>
+            <input type="number" id="cf-clean" value="135" />
+          </div>
+
+          <div>
+            <label>Jerk</label>
+            <input type="number" id="cf-jerk" value="115" />
+          </div>
+
+          <div>
+            <label>Snatch</label>
+            <input type="number" id="cf-snatch" value="100" />
+          </div>
+
+          <div>
+            <label>Press</label>
+            <input type="number" id="cf-press" value="110" />
+          </div>
+
+          <div>
+            <label>Front Squat</label>
+            <input type="number" id="cf-frontsquat" value="145" />
+          </div>
+
+          <div>
+            <label>Back Squat</label>
+            <input type="number" id="cf-backsquat" value="175" />
+          </div>
+
+          <div>
+            <label>Deadlift</label>
+            <input type="number" id="cf-deadlift" value="230" />
+          </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateCrossfit()">
+          계산하기
+        </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">WOD 입력</div>
+
+        <textarea id="crossfit-input">Every 2 minutes x6
+
+1 Power Clean
+2 Push Jerks
+
+Set 1-2 @ 75%
+Set 3-4 @ 80%
+Set 5-6 @ 85%</textarea>
+      </div>
+
+      <div class="card">
+        <div class="section-title">결과</div>
+        <div id="crossfit-output" class="output"></div>
+      </div>
+    </div>
+
+    <!-- WEIGHTLIFTING -->
+    <div id="weightlifting" class="tab-content">
+      <div class="card">
+        <button class="accordion-header" onclick="toggleAccordion('wl-accordion', 'wl-icon')">
+          <span>1RM 입력</span>
+          <span id="wl-icon" class="accordion-icon">▼</span>
+        </button>
+
+        <div id="wl-accordion" class="accordion-content">
+          <div class="unit-row">
+            <label style="margin:0">단위</label>
+            <select id="wl-unit">
+              <option value="kg" selected>KG</option>
+              <option value="lb">LB</option>
+            </select>
+          </div>
+
+          <div class="exercise-grid">
+          <div>
+            <label>Clean</label>
+            <input type="number" id="wl-clean" value="120" />
+          </div>
+
+          <div>
+            <label>Jerk</label>
+            <input type="number" id="wl-jerk" value="140" />
+          </div>
+
+          <div>
+            <label>Snatch</label>
+            <input type="number" id="wl-snatch" value="100" />
+          </div>
+
+          <div>
+            <label>Press</label>
+            <input type="number" id="wl-press" value="75" />
+          </div>
+
+          <div>
+            <label>Front Squat</label>
+            <input type="number" id="wl-frontsquat" value="150" />
+          </div>
+
+          <div>
+            <label>Back Squat</label>
+            <input type="number" id="wl-backsquat" value="170" />
+          </div>
+
+          <div>
+            <label>Deadlift</label>
+            <input type="number" id="wl-deadlift" value="210" />
+          </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateWeightlifting()">
+          계산하기
+        </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">프로그램 입력</div>
+
+        <textarea id="weightlifting-input">sots press 5x3
+
+hang power clean 65% 3x2, 70% 3x2
+
+(slow d.l) clean 75% 3x2, 80% 2x2
+
+clean 80% 2x1, 85% 1x3
+
+hsoc 90~100% 3x3
+
+push jerk 75% 3x3</textarea>
+      </div>
+
+      <div class="card">
+        <div class="section-title">결과</div>
+        <div id="weightlifting-output" class="output"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleAccordion(contentId, iconId) {
+      const content = document.getElementById(contentId);
+      const icon = document.getElementById(iconId);
+
+      content.classList.toggle('collapsed');
+
+      if (content.classList.contains('collapsed')) {
+        icon.textContent = '▶';
+      } else {
+        icon.textContent = '▼';
+      }
+    }
+
+    function syncCrossfitToWeightlifting() {
+      const cfUnit = document.getElementById('cf-unit').value;
+
+      const mappings = [
+        ['clean', 'clean'],
+        ['jerk', 'jerk'],
+        ['snatch', 'snatch'],
+        ['press', 'press'],
+        ['frontsquat', 'frontsquat'],
+        ['backsquat', 'backsquat'],
+        ['deadlift', 'deadlift']
+      ];
+
+      mappings.forEach(([cfKey, wlKey]) => {
+        const cfValue = parseFloat(document.getElementById(`cf-${cfKey}`).value) || 0;
+
+        let kgValue = cfValue;
+
+        if (cfUnit === 'lb') {
+          kgValue = cfValue / 2.20462;
+        }
+
+        document.getElementById(`wl-${wlKey}`).value = Math.round(kgValue);
+      });
+    }
+
+    function switchTab(event, tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+
+      if (tabId === 'weightlifting') {
+        syncCrossfitToWeightlifting();
+      }
+    }
+
+    function convertToKg(value, unit) {
+      if (unit === 'lb') {
+        return value / 2.20462;
+      }
+
+      return value;
+    }
+
+    function roundWeight(value) {
+      return Math.round(value);
+    }
+
+    function kgToLb(kg) {
+      return Math.round(kg * 2.20462);
+    }
+
+    function getExerciseMax(exercise, maxes) {
+      const lower = exercise.toLowerCase();
+
+      // DEADLIFT
+      if (
+        lower.includes('deadlift') ||
+        lower.includes('dead lift') ||
+        lower.includes('d.l')
+      ) {
+        return maxes.deadlift;
+      }
+
+      // FRONT SQUAT
+      if (
+	lower.includes('front squat')
+	) {
+        return maxes.frontSquat;
+      }
+
+      // SQUAT
+      if (
+        lower.includes('back squat')
+      ) {
+        return maxes.backSquat;
+      }
+
+      // CLEAN
+      if (
+        lower.includes('power clean') ||
+        lower.includes('hang power clean') ||
+        lower.includes('(slow d.l) clean') ||
+        lower.includes('c. pull up') ||
+        lower.includes('clean')
+      ) {
+        return maxes.clean;
+      }
+
+      // JERK
+      if (
+        lower.includes('push jerk') ||
+        lower.includes('split jerk') ||
+        lower.includes('hsoc') ||
+        lower.includes('jerk')
+      ) {
+        return maxes.jerk;
+      }
+
+      // PRESS
+      if (
+        lower.includes('strict press') ||
+        lower.includes('push press') ||
+        lower.includes('press')
+      ) {
+        return maxes.press;
+      }
+
+      // SNATCH
+      if (
+	lower.includes('snatch') ||
+	lower.includes('s. pull up') ||
+	lower.includes('s. balance & ohs') ||
+	lower.includes('s. balance') ||
+	lower.includes('ohs') ||
+	) {
+        return maxes.snatch;
+      }
+
+      return maxes.clean;
+    }
+
+    function calculateWeight(percent, maxWeight) {
+      const kg = roundWeight(maxWeight * (percent / 100));
+      const lb = kgToLb(kg);
+
+      return `${kg}kg (${lb}lb)`;
+    }
+
+    function renderOutput(elementId, text) {
+      const html = text
+        .split('\n')
+        .map(line => {
+          const highlighted = line.replace(
+            /(\d+kg \(\d+lb\))/g,
+            '<span class="weight-highlight">$1</span>'
+          );
+
+          return `<div class="output-line">${highlighted || '&nbsp;'}</div>`;
+        })
+        .join('');
+
+      document.getElementById(elementId).innerHTML = html;
+    }
+
+    function calculateCrossfit() {
+      const unit = document.getElementById('cf-unit').value;
+
+      const maxes = {
+        clean: convertToKg(parseFloat(document.getElementById('cf-clean').value) || 0, unit),
+        jerk: convertToKg(parseFloat(document.getElementById('cf-jerk').value) || 0, unit),
+        snatch: convertToKg(parseFloat(document.getElementById('cf-snatch').value) || 0, unit),
+        press: convertToKg(parseFloat(document.getElementById('cf-press').value) || 0, unit),
+        frontSquat: convertToKg(parseFloat(document.getElementById('cf-frontsquat').value) || 0, unit),
+        backSquat: convertToKg(parseFloat(document.getElementById('cf-backsquat').value) || 0, unit),
+        deadlift: convertToKg(parseFloat(document.getElementById('cf-deadlift').value) || 0, unit)
+      };
+
+      const input = document.getElementById('crossfit-input').value;
+      const lines = input.split('\n');
+
+      let detectedMax = maxes.clean;
+
+      for (const line of lines) {
+        const current = getExerciseMax(line, maxes);
+
+        if (current) {
+          detectedMax = current;
+          break;
+        }
+      }
+
+      const output = input.replace(/(\d+(?:\.\d+)?)\s*%/g, (match, percent) => {
+        return calculateWeight(parseFloat(percent), detectedMax);
+      });
+
+      renderOutput('crossfit-output', output);
+    }
+
+    function calculateWeightlifting() {
+      const unit = document.getElementById('wl-unit').value;
+
+      const maxes = {
+        clean: convertToKg(parseFloat(document.getElementById('wl-clean').value) || 0, unit),
+        jerk: convertToKg(parseFloat(document.getElementById('wl-jerk').value) || 0, unit),
+        snatch: convertToKg(parseFloat(document.getElementById('wl-snatch').value) || 0, unit),
+        press: convertToKg(parseFloat(document.getElementById('wl-press').value) || 0, unit),
+        frontSquat: convertToKg(parseFloat(document.getElementById('wl-frontsquat').value) || 0, unit),
+        backSquat: convertToKg(parseFloat(document.getElementById('wl-backsquat').value) || 0, unit),
+        deadlift: convertToKg(parseFloat(document.getElementById('wl-deadlift').value) || 0, unit)
+      };
+
+      const input = document.getElementById('weightlifting-input').value;
+
+      const processed = input
+        .split('\n')
+        .map(line => {
+          const maxWeight = getExerciseMax(line, maxes);
+
+          let updated = line;
+
+          updated = updated.replace(/(\d+)\s*~\s*(\d+)%/g, (match, start, end) => {
+            const startWeight = roundWeight(maxWeight * (parseFloat(start) / 100));
+            const endWeight = roundWeight(maxWeight * (parseFloat(end) / 100));
+
+            return `${startWeight}~${endWeight}kg`;
+          });
+
+          updated = updated.replace(/(\d+(?:\.\d+)?)\s*%/g, (match, percent) => {
+            return calculateWeight(parseFloat(percent), maxWeight);
+          });
+
+          return updated;
+        })
+        .join('\n');
+
+      renderOutput('weightlifting-output', processed);
+    }
+
+    // TEST CASES
+    calculateCrossfit();
+    calculateWeightlifting();
+  </script>
+</body>
+</html>
