@@ -773,7 +773,9 @@ push jerk 75% 3x3</textarea>
         if (moveName) {
           html += `<div class="output-line wl-move-name">${moveName}</div>`;
         }
-        html += `<div class="output-line wl-set-line">${setLines.join(', ')}</div>`;
+        setLines.forEach(line => {
+          html += `<div class="output-line wl-set-line">${line}</div>`;
+        });
       });
 
       outputEl.innerHTML = html;
