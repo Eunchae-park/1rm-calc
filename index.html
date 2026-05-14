@@ -245,6 +245,10 @@
       <button class="tab-btn" onclick="switchTab(event, 'weightlifting')">
         Weightlifting
       </button>
+
+      <button class="tab-btn" onclick="switchTab(event, 'converter')">
+        무게 변환
+      </button>
     </div>
 
     <!-- CROSSFIT -->
@@ -407,6 +411,27 @@ push jerk 75% 3x3</textarea>
       <div class="card">
         <div class="section-title">결과</div>
         <div id="weightlifting-output" class="output"></div>
+      </div>
+    </div>
+
+    <!-- CONVERTER -->
+    <div id="converter" class="tab-content">
+      <div class="card">
+        <div class="section-title">⚖️ LB → KG</div>
+        <label>LB</label>
+        <input type="number" id="conv-lb" placeholder="예) 135" oninput="convertLbToKg()" />
+        <div id="conv-lb-result" class="output" style="margin-top:4px; font-size:22px; font-weight:800; color:#34d399; text-align:center; padding:14px;">
+          —
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">⚖️ KG → LB</div>
+        <label>KG</label>
+        <input type="number" id="conv-kg" placeholder="예) 60" oninput="convertKgToLb()" />
+        <div id="conv-kg-result" class="output" style="margin-top:4px; font-size:22px; font-weight:800; color:#34d399; text-align:center; padding:14px;">
+          —
+        </div>
       </div>
     </div>
   </div>
@@ -779,6 +804,22 @@ push jerk 75% 3x3</textarea>
       });
 
       outputEl.innerHTML = html;
+    }
+
+    function convertLbToKg() {
+      const lb = parseFloat(document.getElementById('conv-lb').value);
+      const el = document.getElementById('conv-lb-result');
+      if (isNaN(lb)) { el.textContent = '—'; return; }
+      const kg = Math.round(lb / 2.20462 * 100) / 100;
+      el.textContent = `${kg} kg`;
+    }
+
+    function convertKgToLb() {
+      const kg = parseFloat(document.getElementById('conv-kg').value);
+      const el = document.getElementById('conv-kg-result');
+      if (isNaN(kg)) { el.textContent = '—'; return; }
+      const lb = Math.round(kg * 2.20462 * 100) / 100;
+      el.textContent = `${lb} lb`;
     }
 
     // TEST CASES
