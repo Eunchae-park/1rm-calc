@@ -486,29 +486,14 @@ push jerk 75% 3x3</textarea>
 
     function getExerciseMax(exercise, maxes) {
       const lower = exercise.toLowerCase();
-
-      // DEADLIFT
-      if (
-        lower.includes('deadlift') ||
-        lower.includes('dead lift') ||
-        lower.includes('d.l')
-      ) {
-        return maxes.deadlift;
-      }
-
-      // FRONT SQUAT
-      if (
-	lower.includes('front squat')
-	) {
-        return maxes.frontSquat;
-      }
-
-      // SQUAT
-      if (
-        lower.includes('back squat')
-      ) {
-        return maxes.backSquat;
-      }
+	  
+	  if(
+		lower.includes('sots press') ||
+        lower.includes('m.press') ||
+		lower.includes('back.press')
+	  ) {
+		return 15;
+	  }
 
       // CLEAN
       if (
@@ -542,13 +527,38 @@ push jerk 75% 3x3</textarea>
 
       // SNATCH
       if (
-        lower.includes('snatch') ||
+		lower.includes('power snatch') ||
+        lower.includes('hang power snatch') ||
+        lower.includes('(slow d.l) snatch') ||
         lower.includes('s. pull up') ||
-        lower.includes('s. balance & ohs') ||
+		lower.includes('ohs') ||
         lower.includes('s. balance') ||
-        lower.includes('ohs')
+        lower.includes('snatch')
       ) {
         return maxes.snatch;
+      }
+	  
+	  // DEADLIFT
+      if (
+        lower.includes('deadlift') ||
+        lower.includes('dead lift') ||
+        lower.includes('d.l')
+      ) {
+        return maxes.deadlift;
+      }
+
+      // FRONT SQUAT
+      if (
+		lower.includes('front squat')
+		) {
+        return maxes.frontSquat;
+      }
+
+      // SQUAT
+      if (
+        lower.includes('back squat')
+      ) {
+        return maxes.backSquat;
       }
 
       return maxes.clean;
@@ -558,7 +568,7 @@ push jerk 75% 3x3</textarea>
       const kg = roundWeight(maxWeight * (percent / 100));
       const lb = kgToLb(kg);
 
-      return `${kg}kg (${lb}lb)`;
+      return `${percent}% → ${kg}kg (${lb}lb)`;
     }
 
     function renderOutput(elementId, text) {
@@ -566,7 +576,7 @@ push jerk 75% 3x3</textarea>
         .split('\n')
         .map(line => {
           const highlighted = line.replace(
-            /(\d+kg \(\d+lb\))/g,
+            /(\d+(?:\.\d+)?%\s*→\s*\d+kg \(\d+lb\))/g,
             '<span class="weight-highlight">$1</span>'
           );
 
@@ -703,7 +713,8 @@ push jerk 75% 3x3</textarea>
       const moveRegex = new RegExp('(?<![&\\w()])(' + allMoves.join('|') + ')', 'gi');
       const input = rawInput
         .replace(moveRegex, '\n$1')
-        .replace(/^\n/, '');
+        .replace(/^\n/, '')
+        .replace(/\n{2,}/g, '\n');
 
       input.split('\n').forEach(line => {
         const trimmed = line.trim();
@@ -738,7 +749,7 @@ push jerk 75% 3x3</textarea>
             const kg2 = roundWeight(maxWeight * parseFloat(e) / 100);
             const lb1 = kgToLb(kg1);
             const lb2 = kgToLb(kg2);
-            return `${kg1}~${kg2}kg (${lb1}~${lb2}lb)`;
+            return `${s}~${e}% → ${kg1}~${kg2}kg (${lb1}~${lb2}lb)`;
           });
 
           // 단일 퍼센트: 65% 3x2
