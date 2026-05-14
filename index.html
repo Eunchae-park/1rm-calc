@@ -743,19 +743,25 @@ push jerk 75% 3x3</textarea>
             seg = seg.replace(moveName, '').trim();
           }
 
-          // 범위 퍼센트: 90~100%
+          // 범위 퍼센트: 90~100% (먼저 처리해서 단일 퍼센트 정규식에 걸리지 않도록)
+          const rangePlaceholders = [];
           seg = seg.replace(/(\d+)\s*~\s*(\d+)%/g, (m, s, e) => {
             const kg1 = roundWeight(maxWeight * parseFloat(s) / 100);
             const kg2 = roundWeight(maxWeight * parseFloat(e) / 100);
             const lb1 = kgToLb(kg1);
             const lb2 = kgToLb(kg2);
-            return `${s}~${e}% → ${kg1}~${kg2}kg (${lb1}~${lb2}lb)`;
+            const result = `${s}~${e}% \u2192 ${kg1}~${kg2}kg (${lb1}~${lb2}lb)`;
+            rangePlaceholders.push(result);
+            return `__RANGE_${rangePlaceholders.length - 1}__`;
           });
 
           // 단일 퍼센트: 65% 3x2
           seg = seg.replace(/(\d+(?:\.\d+)?)\s*%/g, (m, p) => {
             return calculateWeight(parseFloat(p), maxWeight);
           });
+
+          // 플레이스홀더 복원
+          seg = seg.replace(/__RANGE_(\d+)__/g, (m, i) => rangePlaceholders[parseInt(i)]);
 
           // 퍼센트 치환된 seg 그대로 사용 (세트 정보 이미 포함됨)
           // 세트 패턴(NxN)만 회색 span으로 감싸기
